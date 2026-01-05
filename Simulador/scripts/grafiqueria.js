@@ -31,10 +31,3 @@ function distritoUnico(){
 }
 
 disBot.addEventListener('click', () => console.log(distritoUnico()));
-
-/* 
-    <button id="distrito">Distrito Unico</button>
-    <label for="magnitud">Magnitud:</label>
-    <input id="magnitud" type="number" placeholder=130>
-    </input>
-*/

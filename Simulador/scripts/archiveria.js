@@ -2,6 +2,7 @@
 const dropArea = document.getElementById('drop-area');
 const fileElem = document.getElementById('fileElem');
 const resultsTableBody = document.querySelector('#resultsTable tbody');
+const noPartidos=["VOTOS NULOS", "VOTOS EN BLANCO", "VOTOS IMPUGNADOS"];
 
 // Variables globales para guardar los datos cargados
 let matrizVotos = [];
