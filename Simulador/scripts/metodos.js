@@ -17,28 +17,15 @@ function stlag(votos, magnitud){
 }
 
 function hare(votos, magnitud){
-    console.log(votos);
     let avanc = Array(votos.length).fill(0);
-    let sumaVotos = votos.reduce((a, b) => a + b, 0);
-    let q = Math.floor(sumaVotos / magnitud); // Cuota Hare
-    console.log("CIFRA: ", q)
-
-    
+    let q = cuota(votos, magnitud); // Cuota Hare
     let votosRestantes = [...votos];
-
     // Primera repartición: Por cocientes enteros
-    for(let i=0; i < votosRestantes.length; i++){
-        let [escañosDirectos, resto] =  cocienteyresto(votosRestantes[i], q);
-        avanc[i] = escañosDirectos;
-        votosRestantes[i] = resto;
-        console.log(i, resto, votosRestantes[i])
-        magnitud -= escañosDirectos;
-    }
+    magnitud=repartoPorCuota(avanc, votosRestantes, q, magnitud)
     // Segunda repartición: Por residuos mayores
     let indices =  obtenerIndicesOrdenados(votosRestantes).reverse(); // De mayor a menor residuo
     for(let i=0; i < magnitud; i++){
         avanc[indices[i]]++;
-        console.log(indices[i], "...", votosRestantes[ indices[i] ] );
     }
     return avanc;
 }
@@ -73,7 +60,7 @@ function calcularMatriz(matrizVotos, metodoSeleccionado){
             // Mapear el nombre del select a tu función de matematiqueria.js
             let resultadoRegion;
             const copiaVotos = [...votosRegion]; // Copia para no alterar datos originales
-    
+
             resultadoRegion= calcular(copiaVotos, cantEscaños, metodoSeleccionado);
     
             // Sumar los escaños obtenidos en esta región al total nacional

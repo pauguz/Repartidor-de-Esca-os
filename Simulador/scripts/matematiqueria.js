@@ -22,5 +22,19 @@ function iterdh(lis, gan, s){
     lis[m]= lis[m]* gan[m]/(gan[m]+s);
 }
 
+function cuota(votos, magnitud){
+    let sumaVotos = votos.reduce((a, b) => a + b, 0);
+    return Math.floor(sumaVotos / magnitud); // Cuota Hare
+}
 
 
+function repartoPorCuota(avanc, votosRestantes, q, magnitud){
+    for(let i=0; i < votosRestantes.length; i++){
+        let [escañosDirectos, resto] =  cocienteyresto(votosRestantes[i], q);
+        avanc[i] = escañosDirectos;
+        votosRestantes[i] = resto;
+        magnitud -= escañosDirectos;
+    }
+    return magnitud;
+
+}
