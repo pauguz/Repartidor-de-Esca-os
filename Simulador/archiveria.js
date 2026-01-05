@@ -1,15 +1,16 @@
+// --COSAS BASICAS
 const dropArea = document.getElementById('drop-area');
 const fileElem = document.getElementById('fileElem');
 const resultsTableBody = document.querySelector('#resultsTable tbody');
 
-// Variable global para guardar los datos cargados
+// Variables globales para guardar los datos cargados
 let matrizVotos = [];
 let magnitudes = {};
 let nombresCircunscripciones = [];
 
 // --- GESTIÓN DE EVENTOS ---
 
-// Click en el área para abrir selector de archivos
+// Añadiendo "sensibilidad" al drop-area
 dropArea.addEventListener('click', () => fileElem.click());
 
 // Evento cuando se selecciona un archivo mediante el explorador
@@ -77,7 +78,7 @@ function mostrarVistaPrevia(data) {
     resultsTableBody.innerHTML = ""; // Limpiar tabla
     let i=0
 
-    data.forEach(fila => {
+    data.forEach(fila => { //Para cada Circunscripcion
         // Calculamos el total de votos sumando todas las regiones para este partido
         const totalVotosNacional = nombresCircunscripciones.reduce((acc, region) => {
             const votosRegionales = parseFloat(fila[region]) || 0;
