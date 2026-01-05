@@ -128,38 +128,15 @@ function actualizarTablaResultados(totales) {
 // --- VINCULACIÓN CON EL BOTÓN PROCESAR ---
 
 document.getElementById('processButton').addEventListener('click', () => {
-    const metodoSeleccionado = document.getElementById('method').value;
-    
     if (matrizVotos.length === 0) {
         alert("Primero debes cargar un archivo CSV.");
         return;
     }
 
+    const metodoSeleccionado = document.getElementById('method').value;
+
     // Objeto para acumular escaños totales por partido a nivel nacional
-    let escañosTotalesPorPartido = {};
-    matrizVotos.forEach(p => escañosTotalesPorPartido[p.DESCRIPCION_OP] = 0);
-
-    // Iteramos por cada circunscripción (columna)
-    nombresCircunscripciones.forEach(region => {
-        const cantEscaños = magnitudes[region]; // Valor de la última fila
-        if (!cantEscaños || cantEscaños <= 0) return;
-
-        // Extraer solo los votos de esta región
-        let votosRegion = matrizVotos.map(p => parseFloat(p[region]) || 0);
-
-        // Mapear el nombre del select a tu función de matematiqueria.js
-
-        let resultadoRegion;
-        const copiaVotos = [...votosRegion]; // Copia para no alterar datos originales
-
-        resultadoRegion= calcular(copiaVotos, cantEscaños, metodoSeleccionado);
-
-        // Sumar los escaños obtenidos en esta región al total nacional
-        resultadoRegion.forEach((escañosGanados, index) => {
-            const nombrePartido = matrizVotos[index].DESCRIPCION_OP;
-            escañosTotalesPorPartido[nombrePartido] += escañosGanados;
-        });
-    });
+    let escañosTotalesPorPartido = calcularMatriz(matrizVotos, metodoSeleccionado);
 
     // Una vez procesadas todas las regiones, actualizamos la tabla
     actualizarTablaResultados(escañosTotalesPorPartido);
