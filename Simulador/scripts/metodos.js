@@ -16,9 +16,19 @@ function stlag(votos, magnitud){
     return dhont(votos, magnitud, 2);
 }
 
-function hare(votos, magnitud){
+function mayoria(votos, magnitud, avanc){
+    let indices= obtenerIndicesOrdenados(votos).reverse(); //indices de mayor a menor
+    let l=votos.length
+    for(let i=0; i<magnitud; i++){
+        avanc[ indices[i%l] ]++;
+    }
+    return avanc;
+}
+
+
+function hare(votos, magnitud, funcRest=mayoria, extra=0){
     let avanc = Array(votos.length).fill(0);
-    let q = cuota(votos, magnitud); // Cuota Hare
+    let q = cuota(votos, magnitud+extra); // Cuota Hare
     let votosRestantes = [...votos];
     // Primera repartición: Por cocientes enteros
     magnitud=repartoPorCuota(avanc, votosRestantes, q, magnitud)
@@ -27,7 +37,17 @@ function hare(votos, magnitud){
     for(let i=0; i < magnitud; i++){
         avanc[indices[i]]++;
     }
+
+    //Por añadir: logica para manejar exceso
     return avanc;
+}
+
+function drop(votos, magnitud){
+    return hare(votos, magnitud, extra=1);
+}
+
+function imperiali(votos, magnitud){
+    return hare(votos, magnitud, extra=2);
 }
 
 const metodos = new Map([  

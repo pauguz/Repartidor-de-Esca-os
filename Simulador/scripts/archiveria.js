@@ -79,6 +79,18 @@ function mostrarVistaPrevia(data) {
     resultsTableBody.innerHTML = ""; // Limpiar tabla
     let i=0
 
+    if(!disUn){
+        console.log("Regiones: ", nombresCircunscripciones)
+        const cirSel = document.getElementById("cirSel");
+        nombresCircunscripciones.forEach(
+            region => {
+                const op = document.createElement('option');
+                op.innerHTML= `${region}`;
+                cirSel.appendChild(op);
+            }
+        )
+    }
+
     data.forEach(fila => { //Para cada Circunscripcion
         // Calculamos el total de votos sumando todas las regiones para este partido
         const totalVotosNacional = nombresCircunscripciones.reduce((acc, region) => {
