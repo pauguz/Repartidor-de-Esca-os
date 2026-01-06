@@ -65,7 +65,6 @@ function mostrarVistaPrevia(data) {
     });
 }
 
-
 function actualizarTablaResultados(totales) {
     const tbody = document.querySelector('#resultsTable tbody');
     tbody.innerHTML = ""; // Limpiar para mostrar resultados finales
