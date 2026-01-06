@@ -1,4 +1,4 @@
-
+let escañosPorPartido;
 // --- VINCULACIÓN CON EL BOTÓN PROCESAR ---
 
 document.getElementById('processButton').addEventListener('click', () => {
@@ -10,12 +10,30 @@ document.getElementById('processButton').addEventListener('click', () => {
     const metodoSeleccionado = document.getElementById('method').value;
 
     // Objeto para acumular escaños totales por partido a nivel nacional
-    let escañosTotalesPorPartido = calcularMatriz(matrizVotos, metodoSeleccionado);
-    let escañosRegionales = escañosTotalesPorPartido.detalle;
-    escañosTotalesPorPartido=escañosTotalesPorPartido.nacional;
+    escañosPorPartido = calcularMatriz(matrizVotos, metodoSeleccionado);
 
+    // Mostrar según la región seleccionada (o total si aplica)
+    actualizarVistaSegunRegion();
+});
 
+// Actualiza la tabla según el valor seleccionado en el combo de regiones
+function actualizarVistaSegunRegion() {
+    if (!escañosPorPartido) return;
 
-    // Una vez procesadas todas las regiones, actualizamos la tabla
-    actualizarTablaResultados(escañosTotalesPorPartido);
+    const selector = document.getElementById('cirSel');
+    const regionSeleccionada = selector?.value || "TOTAL";
+
+    if (regionSeleccionada !== "TOTAL" && escañosPorPartido.detalle[regionSeleccionada]) {
+        actualizarTablaResultados(escañosPorPartido.detalle[regionSeleccionada]);
+    } else {
+        actualizarTablaResultados(escañosPorPartido.nacional);
+    }
+}
+
+// Listener global para cambios en el selector (funciona aunque se re-renderice)
+document.addEventListener('change', (event) => {
+    const target = event.target;
+    if (target && target.id === 'cirSel') {
+        actualizarVistaSegunRegion();
+    }
 });

@@ -6,6 +6,7 @@ const cirDiv= document.getElementById("cirDiv")
 function opcionesRegionales(){
     console.log("Regiones: ", nombresCircunscripciones)
     const cirSel = document.getElementById("cirSel");
+    cirSel.innerHTML = "";
     ["TOTAL", ...nombresCircunscripciones].forEach(
         region => {
             const op = document.createElement('option');
@@ -14,6 +15,7 @@ function opcionesRegionales(){
             cirSel.appendChild(op);
         }
     );
+    cirSel.value = "TOTAL";
 }
 
 let disUn= false;
@@ -50,5 +52,8 @@ function distritoUnico(){
         return "Distrito Unico Desactivado"
     }
 }
+
+
+
 
 disBot.addEventListener('click', () => console.log(distritoUnico()));
