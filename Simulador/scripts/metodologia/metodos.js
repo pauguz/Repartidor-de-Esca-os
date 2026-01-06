@@ -63,32 +63,43 @@ function calcular(votos, magnitud, abrev){
 }
 
 
-function calcularMatriz(matrizVotos, metodoSeleccionado){
+function calcularMatriz(matrizVotos, metodoSeleccionado) {
+    // 1. Objeto para acumular escaños totales (Nacional)
+    let escañosTotalesPorPartido = {};
+    matrizVotos.forEach(p => escañosTotalesPorPartido[p.DESCRIPCION_OP] = 0);
 
-        // Objeto para acumular escaños totales por partido a nivel nacional
-        let escañosTotalesPorPartido = {};
-        matrizVotos.forEach(p => escañosTotalesPorPartido[p.DESCRIPCION_OP] = 0);
-    
-        // Iteramos por cada circunscripción (columna)
-        nombresCircunscripciones.forEach(region => {
-            const cantEscaños = magnitudes[region]; // Valor de la última fila
-            if (!cantEscaños || cantEscaños <= 0) return;
-    
-            // Extraer solo los votos de esta región
-            let votosRegion = matrizVotos.map(p => parseFloat(p[region]) || 0);
-    
-            // Mapear el nombre del select a tu función de matematiqueria.js
-            let resultadoRegion;
-            const copiaVotos = [...votosRegion]; // Copia para no alterar datos originales
+    // 2. Nuevo objeto para el detalle por circunscripción (Matriz)
+    let matrizEscañosDetalle = {};
 
-            resultadoRegion= calcular(copiaVotos, cantEscaños, metodoSeleccionado);
-    
-            // Sumar los escaños obtenidos en esta región al total nacional
-            resultadoRegion.forEach((escañosGanados, index) => {
-                const nombrePartido = matrizVotos[index].DESCRIPCION_OP;
-                escañosTotalesPorPartido[nombrePartido] += escañosGanados;
-            });
+    // Iteramos por cada circunscripción (columna)
+    nombresCircunscripciones.forEach(region => {
+        const cantEscaños = magnitudes[region]; 
+        if (!cantEscaños || cantEscaños <= 0) return;
+
+        let votosRegion = matrizVotos.map(p => parseFloat(p[region]) || 0);
+        const copiaVotos = [...votosRegion];
+
+        // Calculamos los escaños de esta región específica
+        let resultadoRegion = calcular(copiaVotos, cantEscaños, metodoSeleccionado);
+
+        // Guardamos el detalle en la matriz de escaños
+        // Creamos una entrada para la región con los resultados de cada partido
+        matrizEscañosDetalle[region] = {};
+        
+        resultadoRegion.forEach((escañosGanados, index) => {
+            const nombrePartido = matrizVotos[index].DESCRIPCION_OP;
+            
+            // Llenamos la matriz de detalle
+            matrizEscañosDetalle[region][nombrePartido] = escañosGanados;
+
+            // Sumamos al acumulado nacional
+            escañosTotalesPorPartido[nombrePartido] += escañosGanados;
         });
+    });
 
-        return escañosTotalesPorPartido;
+    // Retornamos ambos resultados
+    return {
+        nacional: escañosTotalesPorPartido,
+        detalle: matrizEscañosDetalle
+    };
 }

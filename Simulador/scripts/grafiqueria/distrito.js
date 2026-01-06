@@ -6,9 +6,10 @@ const cirDiv= document.getElementById("cirDiv")
 function opcionesRegionales(){
     console.log("Regiones: ", nombresCircunscripciones)
     const cirSel = document.getElementById("cirSel");
-    nombresCircunscripciones.forEach(
+    ["TOTAL", ...nombresCircunscripciones].forEach(
         region => {
             const op = document.createElement('option');
+            op.setAttribute("value", `${region}`);
             op.innerHTML= `${region}`;
             cirSel.appendChild(op);
         }

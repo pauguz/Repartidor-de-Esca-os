@@ -11,6 +11,10 @@ document.getElementById('processButton').addEventListener('click', () => {
 
     // Objeto para acumular escaños totales por partido a nivel nacional
     let escañosTotalesPorPartido = calcularMatriz(matrizVotos, metodoSeleccionado);
+    let escañosRegionales = escañosTotalesPorPartido.detalle;
+    escañosTotalesPorPartido=escañosTotalesPorPartido.nacional;
+
+
 
     // Una vez procesadas todas las regiones, actualizamos la tabla
     actualizarTablaResultados(escañosTotalesPorPartido);
