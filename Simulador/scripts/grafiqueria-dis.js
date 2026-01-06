@@ -3,6 +3,18 @@ const disBot = document.getElementById("distrito");
 const disSpan= document.getElementById("input-magnitud")
 const cirDiv= document.getElementById("cirDiv")
 
+function opcionesRegionales(){
+    console.log("Regiones: ", nombresCircunscripciones)
+    const cirSel = document.getElementById("cirSel");
+    nombresCircunscripciones.forEach(
+        region => {
+            const op = document.createElement('option');
+            op.innerHTML= `${region}`;
+            cirSel.appendChild(op);
+        }
+    );
+}
+
 let disUn= false;
 
 function distritoUnico(){
@@ -32,8 +44,8 @@ function distritoUnico(){
         <label for="cirSel">Circunscripcion:</label>
         <select id="cirSel" placeholder="dummy">
         </select>
-        `
-
+        `;
+        opcionesRegionales();
         return "Distrito Unico Desactivado"
     }
 }

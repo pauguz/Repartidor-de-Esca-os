@@ -80,15 +80,7 @@ function mostrarVistaPrevia(data) {
     let i=0
 
     if(!disUn){
-        console.log("Regiones: ", nombresCircunscripciones)
-        const cirSel = document.getElementById("cirSel");
-        nombresCircunscripciones.forEach(
-            region => {
-                const op = document.createElement('option');
-                op.innerHTML= `${region}`;
-                cirSel.appendChild(op);
-            }
-        )
+        opcionesRegionales();
     }
 
     data.forEach(fila => { //Para cada Circunscripcion
