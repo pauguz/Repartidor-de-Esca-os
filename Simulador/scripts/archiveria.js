@@ -1,46 +1,9 @@
-// --COSAS BASICAS
-const dropArea = document.getElementById('drop-area');
-const fileElem = document.getElementById('fileElem');
-const resultsTableBody = document.querySelector('#resultsTable tbody');
 const noPartidos=["VOTOS NULOS", "VOTOS EN BLANCO", "VOTOS IMPUGNADOS"];
 
 // Variables globales para guardar los datos cargados
 let matrizVotos = [];
 let magnitudes = {};
 let nombresCircunscripciones = [];
-
-// --- GESTIÓN DE EVENTOS ---
-
-// Añadiendo "sensibilidad" al drop-area
-dropArea.addEventListener('click', () => fileElem.click());
-
-// Evento cuando se selecciona un archivo mediante el explorador
-fileElem.addEventListener('change', function() {
-    handleFiles(this.files[0]);
-});
-
-// Prevenir comportamiento por defecto (evita que el navegador abra el archivo)
-['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-    dropArea.addEventListener(eventName, e => {
-        e.preventDefault();
-        e.stopPropagation();
-    }, false);
-});
-
-// Efecto visual al arrastrar
-['dragenter', 'dragover'].forEach(eventName => {
-    dropArea.addEventListener(eventName, () => dropArea.classList.add('hover'), false);
-});
-
-['dragleave', 'drop'].forEach(eventName => {
-    dropArea.addEventListener(eventName, () => dropArea.classList.remove('hover'), false);
-});
-
-// Manejar la caída del archivo
-dropArea.addEventListener('drop', e => {
-    const dt = e.dataTransfer;
-    handleFiles(dt.files[0]);
-});
 
 // --- PROCESAMIENTO DEL ARCHIVO ---
 
@@ -129,20 +92,3 @@ function actualizarTablaResultados(totales) {
         tbody.appendChild(tr);
     });
 }
-
-// --- VINCULACIÓN CON EL BOTÓN PROCESAR ---
-
-document.getElementById('processButton').addEventListener('click', () => {
-    if (matrizVotos.length === 0) {
-        alert("Primero debes cargar un archivo CSV.");
-        return;
-    }
-
-    const metodoSeleccionado = document.getElementById('method').value;
-
-    // Objeto para acumular escaños totales por partido a nivel nacional
-    let escañosTotalesPorPartido = calcularMatriz(matrizVotos, metodoSeleccionado);
-
-    // Una vez procesadas todas las regiones, actualizamos la tabla
-    actualizarTablaResultados(escañosTotalesPorPartido);
-});
