@@ -6,7 +6,7 @@ function dhont(votos, magnitud, s=1){
     while(i<magnitud ){
          iterdh(votos, avanc, s);
         i++;
-        console.log(votos);
+        //console.log(votos);
     }
     return avanc;
 }
@@ -63,7 +63,7 @@ function calcular(votos, magnitud, abrev){
 }
 
 
-function calcularMatriz(matrizVotos, metodoSeleccionado) {
+function calcularMatriz(matrizVotos, metodoSeleccionado, circunscripciones) {
     // 1. Objeto para acumular escaños totales (Nacional)
     let escañosTotalesPorPartido = {};
     matrizVotos.forEach(p => escañosTotalesPorPartido[p.DESCRIPCION_OP] = 0);
@@ -72,7 +72,7 @@ function calcularMatriz(matrizVotos, metodoSeleccionado) {
     let matrizEscañosDetalle = {};
 
     // Iteramos por cada circunscripción (columna)
-    nombresCircunscripciones.forEach(region => {
+    circunscripciones.forEach(region => {
         const cantEscaños = magnitudes[region]; 
         if (!cantEscaños || cantEscaños <= 0) return;
 
@@ -96,10 +96,9 @@ function calcularMatriz(matrizVotos, metodoSeleccionado) {
             escañosTotalesPorPartido[nombrePartido] += escañosGanados;
         });
     });
+    matrizEscañosDetalle["TOTAL"]=escañosTotalesPorPartido;
+    console.log(matrizEscañosDetalle)
 
     // Retornamos ambos resultados
-    return {
-        nacional: escañosTotalesPorPartido,
-        detalle: matrizEscañosDetalle
-    };
+    return matrizEscañosDetalle;
 }

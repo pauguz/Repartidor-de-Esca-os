@@ -6,7 +6,7 @@ const disSpan= document.getElementById("input-magnitud")
 const cirDiv= document.getElementById("cirDiv")
 
 function opcionesRegionales(){
-    console.log("Regiones: ", nombresCircunscripciones)
+    //console.log("Regiones: ", nombresCircunscripciones)
     const cirSel = document.getElementById("cirSel");
     cirSel.innerHTML = "";
     ["TOTAL", ...nombresCircunscripciones].forEach(
@@ -23,7 +23,7 @@ function opcionesRegionales(){
 let disUn= false;
 
 function distritoUnico(){
-    disUn = !disUn
+    disUn = !disUn;
     if(disUn){
         disBot.innerHTML=
         `
@@ -37,6 +37,7 @@ function distritoUnico(){
         </input>
         `;
         cirDiv.innerHTML= ``;
+        actualizarVistaSegunRegion();
 
 ;
         return "Distrito Unico Activado"
@@ -55,20 +56,7 @@ function distritoUnico(){
     }
 }
 
-
-// Actualiza la tabla según el valor seleccionado en el combo de regiones
-function actualizarVistaSegunRegion() {
-    if (!escañosPorPartido) return;
-
-    const selector = document.getElementById('cirSel');
-    const regionSeleccionada = selector?.value || "TOTAL";
-
-    if (regionSeleccionada !== "TOTAL" && escañosPorPartido.detalle[regionSeleccionada]) {
-        actualizarTablaResultados(escañosPorPartido.detalle[regionSeleccionada]);
-    } else {
-        actualizarTablaResultados(escañosPorPartido.nacional);
-    }
-}
+disBot.addEventListener('click', () => console.log(distritoUnico()));
 
 // Listener global para cambios en el selector (funciona aunque se re-renderice)
 document.addEventListener('change', (event) => {
@@ -77,6 +65,3 @@ document.addEventListener('change', (event) => {
         actualizarVistaSegunRegion();
     }
 });
-
-
-disBot.addEventListener('click', () => console.log(distritoUnico()));
