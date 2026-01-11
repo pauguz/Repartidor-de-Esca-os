@@ -1,3 +1,5 @@
+//TODO LO RELACIONADO A LOS MODOS DE DISTRITOS
+
 //--VALORES GLOBALES--
 const disBot = document.getElementById("distrito");
 const disSpan= document.getElementById("input-magnitud")
@@ -54,6 +56,27 @@ function distritoUnico(){
 }
 
 
+// Actualiza la tabla según el valor seleccionado en el combo de regiones
+function actualizarVistaSegunRegion() {
+    if (!escañosPorPartido) return;
+
+    const selector = document.getElementById('cirSel');
+    const regionSeleccionada = selector?.value || "TOTAL";
+
+    if (regionSeleccionada !== "TOTAL" && escañosPorPartido.detalle[regionSeleccionada]) {
+        actualizarTablaResultados(escañosPorPartido.detalle[regionSeleccionada]);
+    } else {
+        actualizarTablaResultados(escañosPorPartido.nacional);
+    }
+}
+
+// Listener global para cambios en el selector (funciona aunque se re-renderice)
+document.addEventListener('change', (event) => {
+    const target = event.target;
+    if (target && target.id === 'cirSel') {
+        actualizarVistaSegunRegion();
+    }
+});
 
 
 disBot.addEventListener('click', () => console.log(distritoUnico()));

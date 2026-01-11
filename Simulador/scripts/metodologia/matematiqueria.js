@@ -38,3 +38,21 @@ function repartoPorCuota(avanc, votosRestantes, q, magnitud){
     return magnitud;
 
 }
+
+function dummy(arr){
+    console.log(arr);
+}
+
+
+function totalNacional(matrizVotos, circunscripciones, func=dummy) {
+    matrizVotos.map(fila => {
+        const totalVotos = circunscripciones.reduce((acc, region) => {
+            const votosRegionales = parseFloat(fila[region]) || 0;
+            return acc + votosRegionales;
+        }, 0);
+
+        fila.TOTAL=totalVotos;
+    });
+    func(matrizVotos);
+    return matrizVotos;
+}
