@@ -10,15 +10,8 @@ function actualizarTablaResultados(reg) {
         .sort((a, b) => b[1] - a[1]); // Ordenar por escaños de mayor a menor
 
     listaOrdenada.forEach(([nombrePartido, escaños]) => {
-        // Obtenemos los votos. Si es "TOTAL", usamos la última fila de la matriz
-        // Si es una región, buscamos el índice de esa región
-        let votos = 0;
-        if (reg === "TOTAL") {
-            votos = matrizVotos.at(-1)[nombrePartido] || 0;
-        } else {
-            const idx = nombresCircunscripciones.indexOf(reg);
-            votos = matrizVotos[idx] ? matrizVotos[idx][nombrePartido] : 0;
-        }
+        // Obtenemos los votos. Buscamos en la matriz con el indice de la region y nombre del partido
+        let votos = matrizVotos[reg] ? matrizVotos[reg][nombrePartido] : 0;
 
         const tr = document.createElement('tr');
         if (escaños > 0) tr.style.backgroundColor = "#f0fff0";
@@ -41,8 +34,10 @@ function actualizarVistaSegunRegion() {
     if (!escañosPorPartido) return;
 
     if (escañosPorPartido[regionSeleccionada]) {
+        console.log("SI HUBO SELECCION")
         actualizarTablaResultados( regionSeleccionada);
     } else {
+        console.log("NO SELECCIONATE NADA", regionSeleccionada)
         actualizarTablaResultados('TOTAL');
     }
 }

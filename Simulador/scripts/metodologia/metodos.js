@@ -67,15 +67,15 @@ function calcularMatriz(matrizVotos, metodoSeleccionado, nombresPartidos) {
     let escañosTotalesNacional = {};
     nombresPartidos.forEach(p => escañosTotalesNacional[p] = 0);
 
-    let matrizEscañosDetalle = {};
+    let matrizEscañosDetalle = [];
 
     // Iteramos por cada objeto (que representa una región)
     // Usamos el índice para obtener el nombre de la región desde nombresCircunscripciones
     matrizVotos.forEach((filaRegion, i) => {
         const nombreRegion = nombresCircunscripciones[i];
+        const cantEscaños = magnitudes[nombreRegion];
         
         // Si no hay nombre de región o es la fila de totales (que no tiene magnitud), saltamos
-        const cantEscaños = magnitudes[nombreRegion];
         if (!nombreRegion || !cantEscaños || cantEscaños <= 0) return;
 
         // Extraemos los votos de los partidos en el orden de nombresPartidos
@@ -84,17 +84,17 @@ function calcularMatriz(matrizVotos, metodoSeleccionado, nombresPartidos) {
         // Calculamos el reparto
         const resultadoRegion = calcular([...votosDeEstaRegion], cantEscaños, metodoSeleccionado);
 
-        matrizEscañosDetalle[nombreRegion] = {};
+        matrizEscañosDetalle[i] = {};
 
         resultadoRegion.forEach((escañosGanados, index) => {
             const partido = nombresPartidos[index];
-            matrizEscañosDetalle[nombreRegion][partido] = escañosGanados;
+            matrizEscañosDetalle[i][partido] = escañosGanados;
             
             // Acumulado Nacional
             escañosTotalesNacional[partido] += escañosGanados;
         });
     });
 
-    matrizEscañosDetalle["TOTAL"] = escañosTotalesNacional;
+    matrizEscañosDetalle.push(escañosTotalesNacional);
     return matrizEscañosDetalle;
 }

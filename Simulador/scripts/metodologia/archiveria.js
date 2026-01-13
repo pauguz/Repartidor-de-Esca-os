@@ -53,7 +53,7 @@ function handleFiles(file) {
       // 3. Procesamiento y UI
       // Calculamos totales nacionales (ahora sumando verticalmente la matriz limpia)
       nombresCircunscripciones.push("TOTAL");
-      console.log(nombresCircunscripciones, "AAA");
+      //console.log(nombresCircunscripciones, "AAA");
       totalNacional(matrizVotos, nombresPartidos, vistaPorClave);
 
 
@@ -61,7 +61,7 @@ function handleFiles(file) {
         opcionesRegionales();
       }
 
-      console.log("Matriz Limpia (Solo Partidos):", matrizVotos);
+      //console.log("Matriz Limpia (Solo Partidos):", matrizVotos);
       alert(`Cargadas ${nombresCircunscripciones.length} regiones.`);
     }
   });

@@ -3,11 +3,16 @@ function mayor(lis){
     return lis.indexOf(m);
 }
 
+function ordenarLlaves(arrPares){
+    return arrPares.sort((a, b) =>  a[1]-b[1])           // Ordenar por valor
+      .map(obj => obj.indice);                           // Extraer solo los índices
+}
+
 function obtenerIndicesOrdenados(arr) {
     return arr
-      .map((valor, indice) => ({ indice, valor })) // Crear pares {indice, valor}
-      .sort((a, b) =>  a.valor-b.valor)           // Ordenar por valor
-      .map(obj => obj.indice);                     // Extraer solo los índices
+      .map((valor, indice) => ([indice, valor ])) // Crear pares {indice, valor}
+      .sort((a, b) =>  a[1]-b[1])           // Ordenar por valor
+      .map(obj => obj.indice);                     
   }
 
 function cocienteyresto(votos, cuota){
