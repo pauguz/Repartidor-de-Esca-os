@@ -39,19 +39,27 @@ dropArea.addEventListener('drop', e => {
 });
 
 
-function mostrarVistaPrevia(data, columna="TOTAL") {
+function mostrarVistaPrevia(data, columna) {
     const resultsTableBody = document.querySelector('#resultsTable tbody');
     resultsTableBody.innerHTML = ""; 
 
+    console.log(data)
 
-    data.forEach((partido, i) => {
+    Object.entries(data[columna]).forEach((partido, i) => {
+        console.log(partido)
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td style="text-align: left;">${i}</td>
-            <td style="text-align: left;">${partido.DESCRIPCION_OP}</td>
-            <td>${partido[columna].toLocaleString()}</td>
+            <td style="text-align: left;">${partido[0]}</td>
+            <td>${partido[1].toLocaleString()}</td>
             <td><span style="color: #999;">Pendiente...</span></td>
         `;
         resultsTableBody.appendChild(tr);
     });
+}
+
+function vistaPorClave(data, columna="TOTAL"){
+    const col= nombresCircunscripciones.indexOf(columna);
+    console.log(columna, "----",  col);
+    mostrarVistaPrevia(data, col);
 }

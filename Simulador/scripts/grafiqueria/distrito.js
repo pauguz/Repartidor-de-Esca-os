@@ -9,15 +9,15 @@ function opcionesRegionales(){
     //console.log("Regiones: ", nombresCircunscripciones)
     const cirSel = document.getElementById("cirSel");
     cirSel.innerHTML = "";
-    ["TOTAL", ...nombresCircunscripciones].forEach(
-        region => {
+    [  ...nombresCircunscripciones].forEach(
+        (region, i) => {
             const op = document.createElement('option');
-            op.setAttribute("value", `${region}`);
+            op.setAttribute("value", `${i}`);
             op.innerHTML= `${region}`;
             cirSel.appendChild(op);
         }
     );
-    cirSel.value = "TOTAL";
+    cirSel.value = nombresCircunscripciones.length-1;
 }
 
 let disUn= false;

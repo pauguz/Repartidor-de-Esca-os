@@ -44,15 +44,26 @@ function dummy(arr){
 }
 
 
-function totalNacional(matrizVotos, circunscripciones, func=dummy) {
-    matrizVotos.map(fila => {
-        const totalVotos = circunscripciones.reduce((acc, region) => {
-            const votosRegionales = parseFloat(fila[region]) || 0;
-            return acc + votosRegionales;
-        }, 0);
+function totalNacional(matrizVotos, nombresPartidos, func = (data) => {}) {
+    // 1. Crear un objeto para acumular sumas
+    const totales = {};
+    nombresPartidos.forEach(p => totales[p] = 0);
 
-        fila.TOTAL=totalVotos;
+    // 2. Sumar verticalmente: recorremos cada región y cada partido
+    matrizVotos.forEach(filaRegión => {
+        nombresPartidos.forEach(partido => {
+            totales[partido] += parseFloat(filaRegión[partido]) || 0;
+        });
     });
+
+    // 3. Agregamos una fila virtual "TOTAL NACIONAL" a la matriz 
+    // para que la vista previa pueda leerla como si fuera una región más
+    const filaTotal = { "Circunscripciones": "TOTAL" }; // Ajusta el nombre según tu CSV
+    nombresPartidos.forEach(p => filaTotal[p] = totales[p]);
+    
+    // Guardamos los totales nacionales en una propiedad accesible si se necesita
+    matrizVotos.push(totales); 
+
     func(matrizVotos);
-    return matrizVotos;
+    return totales;
 }

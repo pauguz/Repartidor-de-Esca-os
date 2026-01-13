@@ -1,38 +1,42 @@
 //TODO LO RELACIONADO AL BOTON PARA PROCESAR LA TABLA 
 
 function actualizarTablaResultados(reg) {
-    const totales=escañosPorPartido[reg];
+    const totales = escañosPorPartido[reg];
     const tbody = document.querySelector('#resultsTable tbody');
-    tbody.innerHTML = ""; // Limpiar para mostrar resultados finales
+    tbody.innerHTML = ""; 
 
-    // Convertir el objeto a array para poder ordenarlo por escaños (de mayor a menor)
+    // Obtenemos los nombres de los partidos (las llaves del objeto de resultados)
     const listaOrdenada = Object.entries(totales)
-        .sort((a, b) => b[1] - a[1]);
+        .sort((a, b) => b[1] - a[1]); // Ordenar por escaños de mayor a menor
 
-    console.log(totales);
-    listaOrdenada.forEach(([nombre, escaños]) => {
-        // Buscamos el total de votos nacional para mostrarlo también
-        const partidoData = matrizVotos.find(p => p.DESCRIPCION_OP === nombre);
-        const totalVotos = parseFloat(partidoData[reg]);
+    listaOrdenada.forEach(([nombrePartido, escaños]) => {
+        // Obtenemos los votos. Si es "TOTAL", usamos la última fila de la matriz
+        // Si es una región, buscamos el índice de esa región
+        let votos = 0;
+        if (reg === "TOTAL") {
+            votos = matrizVotos.at(-1)[nombrePartido] || 0;
+        } else {
+            const idx = nombresCircunscripciones.indexOf(reg);
+            votos = matrizVotos[idx] ? matrizVotos[idx][nombrePartido] : 0;
+        }
+
         const tr = document.createElement('tr');
-
-        // Si el partido tiene escaños, resaltamos la fila
         if (escaños > 0) tr.style.backgroundColor = "#f0fff0";
 
         tr.innerHTML = `
-            <td style="text-align: left;">${escaños}</td>
-            <td style="text-align: left;">${nombre}</td>
-            <td>${totalVotos.toLocaleString()}</td>
-            <td><strong>${escaños}</strong></td>
+            <td style="text-align: left;"><strong>${escaños}</strong></td>
+            <td style="text-align: left;">${nombrePartido}</td>
+            <td>${parseFloat(votos).toLocaleString()}</td>
+            <td>${escaños > 0 ? escaños : '-'}</td>
         `;
         tbody.appendChild(tr);
     });
 }
-
 // Actualiza la tabla según el valor seleccionado en el combo de regiones
 function actualizarVistaSegunRegion() {
     const selector = document.getElementById('cirSel');
     const regionSeleccionada = (disUn || !selector) ? "TOTAL" : selector.value;
+    console.log("seleccionaste ", regionSeleccionada, matrizVotos[regionSeleccionada]);
     mostrarVistaPrevia(matrizVotos, regionSeleccionada);
     if (!escañosPorPartido) return;
 
@@ -52,37 +56,39 @@ document.getElementById('processButton').addEventListener('click', () => {
     }
 
     const metodoSeleccionado = document.getElementById('method').value;
+    
+    // Identificar partidos: usamos las llaves del primer objeto de la matriz
+    // Excluimos 'TOTAL' si lo añadiste en el procesamiento previo
+    const nombresPartidos = Object.keys(matrizVotos[0]).filter(k => k !== 'TOTAL');
 
-    if (disUn){
-        // 1. Obtener la magnitud personalizada (o 130 por defecto)
+    if (disUn) {
+        // --- MODO DISTRITO ÚNICO ---
         const inputMag = document.getElementById('magnitud');
         const magnitudUnica = parseInt(inputMag?.value) || 130;
 
-        // 2. Extraer solo el array de votos totales de la matriz
-        // matrizVotos es [{DESCRIPCION_OP: 'A', TOTAL: 100, ...}, {..}]
-        const listaVotosNacionales = matrizVotos.map(p => parseFloat(p.TOTAL) || 0);
+        // Usamos la última fila de la matriz (que contiene los totales nacionales)
+        const filaNacional = matrizVotos.at(-1);
+        const listaVotosNacionales = nombresPartidos.map(p => parseFloat(filaNacional[p]) || 0);
 
-        // 3. Calcular escaños a nivel nacional
         const resultadoNacional = calcular([...listaVotosNacionales], magnitudUnica, metodoSeleccionado);
 
-        // 4. Formatear para que 'escañosPorPartido' tenga la estructura que espera tu tabla
-        // Creamos un objeto donde la llave es el nombre del partido
         let escañosNacionalObj = {};
         resultadoNacional.forEach((escaños, index) => {
-            const nombre = matrizVotos[index].DESCRIPCION_OP;
+            const nombre = nombresPartidos[index];
             escañosNacionalObj[nombre] = escaños;
         });
 
-        // Guardamos en la variable global con la estructura completa
-        escañosPorPartido = {  "TOTAL": escañosNacionalObj  // En distrito único, el detalle es el mismo total
-            }
+        escañosPorPartido = { "TOTAL": escañosNacionalObj };
+
     } else {
-    // Objeto para acumular escaños totales por partido a nivel nacional
-    escañosPorPartido = calcularMatriz(matrizVotos, metodoSeleccionado, nombresCircunscripciones);
+        // --- MODO DISTRITO MÚLTIPLE (REGIONAL) ---
+        // IMPORTANTE: Pasamos una copia de la matriz sin la última fila (si la última es el TOTAL nacional)
+        // para que calcularMatriz no la procese como una región extra.
+        const matrizSoloRegiones = matrizVotos.slice(0, nombresCircunscripciones.length);
+        
+        escañosPorPartido = calcularMatriz(matrizSoloRegiones, metodoSeleccionado, nombresPartidos);
     }
 
-
-
-    // Mostrar según la región seleccionada (o total si aplica)
+    console.log("Cálculo finalizado:", escañosPorPartido);
     actualizarVistaSegunRegion();
 });
