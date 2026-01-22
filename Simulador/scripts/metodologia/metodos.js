@@ -78,11 +78,8 @@ function calcularMatriz(matrizVotos, metodoSeleccionado, nombresPartidos) {
         // Si no hay nombre de región o es la fila de totales (que no tiene magnitud), saltamos
         if (!nombreRegion || !cantEscaños || cantEscaños <= 0) return;
 
-        // Extraemos los votos de los partidos en el orden de nombresPartidos
-        const votosDeEstaRegion = nombresPartidos.map(p => parseFloat(filaRegion[p]) || 0);
-
         // Calculamos el reparto
-        const resultadoRegion = calcular([...votosDeEstaRegion], cantEscaños, metodoSeleccionado);
+        const resultadoRegion = calcular(Object.values(filaRegion), cantEscaños, metodoSeleccionado);
 
         matrizEscañosDetalle[i] = {};
 

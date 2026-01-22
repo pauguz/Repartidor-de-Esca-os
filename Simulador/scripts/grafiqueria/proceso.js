@@ -1,6 +1,6 @@
 //TODO LO RELACIONADO AL BOTON PARA PROCESAR LA TABLA 
 
-function actualizarTablaResultados(reg) {
+function actualizarTablaResultados(reg, indiceMatriz) {
     const totales = escañosPorPartido[reg];
     const tbody = document.querySelector('#resultsTable tbody');
     tbody.innerHTML = ""; 
@@ -9,9 +9,18 @@ function actualizarTablaResultados(reg) {
     const listaOrdenada = Object.entries(totales)
         .sort((a, b) => b[1] - a[1]); // Ordenar por escaños de mayor a menor
 
+    // Si no se proporciona indiceMatriz, intentamos inferirlo
+    if (indiceMatriz === undefined) {
+        if (reg === "TOTAL") {
+            indiceMatriz = matrizVotos.length - 1; // Última fila con totales nacionales
+        } else {
+            indiceMatriz = parseInt(reg);
+        }
+    }
+
     listaOrdenada.forEach(([nombrePartido, escaños]) => {
-        // Obtenemos los votos. Buscamos en la matriz con el indice de la region y nombre del partido
-        let votos = matrizVotos[reg] ? matrizVotos[reg][nombrePartido] : 0;
+        // Obtenemos los votos. Buscamos en la matriz con el indice correcto y nombre del partido
+        let votos = matrizVotos[indiceMatriz] ? matrizVotos[indiceMatriz][nombrePartido] : 0;
 
         const tr = document.createElement('tr');
         if (escaños > 0) tr.style.backgroundColor = "#f0fff0";
@@ -28,17 +37,28 @@ function actualizarTablaResultados(reg) {
 // Actualiza la tabla según el valor seleccionado en el combo de regiones
 function actualizarVistaSegunRegion() {
     const selector = document.getElementById('cirSel');
-    const regionSeleccionada = (disUn || !selector) ? "TOTAL" : selector.value;
-    console.log("seleccionaste ", regionSeleccionada, matrizVotos[regionSeleccionada]);
-    mostrarVistaPrevia(matrizVotos, regionSeleccionada);
+    let regionSeleccionada;
+    let indiceMatriz;
+    
+    if (disUn || !selector) {
+        // En modo distrito único, usamos "TOTAL" como clave y el último índice de la matriz
+        regionSeleccionada = "TOTAL";
+        indiceMatriz = matrizVotos.length - 1; // Última fila que contiene los totales nacionales
+    } else {
+        regionSeleccionada = selector.value;
+        indiceMatriz = parseInt(regionSeleccionada);
+    }
+    
+    console.log("seleccionaste ", regionSeleccionada, matrizVotos[indiceMatriz]);
+    mostrarVistaPrevia(matrizVotos, indiceMatriz);
     if (!escañosPorPartido) return;
 
     if (escañosPorPartido[regionSeleccionada]) {
         console.log("SI HUBO SELECCION")
-        actualizarTablaResultados( regionSeleccionada);
+        actualizarTablaResultados(regionSeleccionada, indiceMatriz);
     } else {
         console.log("NO SELECCIONATE NADA", regionSeleccionada)
-        actualizarTablaResultados('TOTAL');
+        actualizarTablaResultados('TOTAL', matrizVotos.length - 1);
     }
 }
 
@@ -63,6 +83,7 @@ document.getElementById('processButton').addEventListener('click', () => {
 
         // Usamos la última fila de la matriz (que contiene los totales nacionales)
         const filaNacional = matrizVotos.at(-1);
+        //Solucion mejorable al problema de Hare en partidos con  0 votos
         const listaVotosNacionales = nombresPartidos.map(p => parseFloat(filaNacional[p]) || 0);
 
         const resultadoNacional = calcular([...listaVotosNacionales], magnitudUnica, metodoSeleccionado);
